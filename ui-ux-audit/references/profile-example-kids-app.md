@@ -1,6 +1,6 @@
 # Example Project Profile: Children's Learning App (Ages 4 to 9)
 
-This file does two jobs. It is a working profile for any touch-first kids learning app, and it is the template for writing your own profiles: copy it to `references/project-<name>.md`, replace the rules with your project's own, and register it in the Project profiles section of SKILL.md with detection cues. Profile rules OVERRIDE the universal defaults in the other reference files; everything not mentioned here keeps its universal rule.
+This file does two jobs. It is a working profile for any touch-first kids learning app, and it is the template for writing your own profiles: copy it to `references/profile-<name>.md`, replace the rules with your project's own, and register it in the Project profiles section of SKILL.md with detection cues. Profile rules OVERRIDE the universal defaults in the other reference files; everything not mentioned here keeps its universal rule.
 
 Detection (adapt to your project): file names or content referencing the app, its design tokens, kids reading/typing/learning features, or the user saying so.
 
@@ -51,3 +51,23 @@ This section shows how a profile locks an aesthetic; the example system is neobr
 - On native screens, Tailwind web utilities translate via the project's styling layer (e.g. NativeWind); verify the press-feedback and shadow patterns have native equivalents (elevation/shadow props differ on Android/iOS).
 - Safe areas via the safe-area context on every screen with bottom-anchored controls.
 - Touch targets use `hitSlop` only as a patch; prefer sizing the pressable itself so the visual matches the target.
+
+## Simulation persona (overrides the generic target user in `references/user-simulation.md`)
+
+When you run the simulate-the-user-first pass for a kids learning app, the target user is **a 4-to-9-year-old who was just handed the phone**: distracted, not yet a fluent reader, tapping imprecisely, with no patience for instructions they cannot read. Walk the learning flow as that child — can they tell what to tap *without reading*? does a mis-tap punish them? does anything important rely on text they cannot decode? For parent-facing surfaces (settings, account, the parent gate), the user is **a parent on a phone, one-handed, in a 30-second window between tasks**. A screen that serves both gets both walks.
+
+## The recurring squeeze failure — check FIRST on any text-next-to-control row
+
+The universal "fixed-width sibling starves a text column" bug (Category 2, Layout) is a relentless repeat offender in kids-app cards and rows, so check it first on every card or row that places text beside a button, toggle, icon group, or badge. Two seen failure modes: an unbreakable token (an email, URL, or id) wrapping mid-value (`first.last@example.` / `com`); and — the one waved off as "it just wraps" — a full-sentence description collapsing into a one-word-per-line ribbon ("Stop / further / collection / of / data"). It is not fine; it looks broken. The fix is WIDTH: give the text its own full-width row and move the control onto a row below. Verify at 320px with realistic long content (a 40+ character email, a full-sentence label, a 20-character name) and LOOK; never clear it by reasoning. Treat as Critical here, not Warning — a known repeat offender on this kind of screen.
+
+## Mascot / character bounding-box standard (if the app uses illustrated characters)
+
+Kids apps lean on illustrated mascots, and they look broken the moment two render side by side at different sizes or with floating limbs. If the project draws characters as SVG, hold every character to one shared invisible bounding box. Example standard for a `0 0 100 100` viewBox:
+
+- **Vertical:** topmost element at `y ≥ 8`, bottommost at `y ≤ 92`; total height ~80 (give or take 4).
+- **Horizontal:** leftmost at `x ≥ 4`, rightmost at `x ≤ 96`; centred on `x = 50`.
+- **Body mass:** roughly `60 × 60` centred near `(50, 54)`; main head/body ellipse about `rx ≈ 30, ry ≈ 30`.
+- **No floating appendage:** ears, horns, antennae, or tails must overlap the body silhouette by ≥ 2px at their base. Confirm `appendage_base_y > body_cy − body_ry × √(1 − ((x − body_cx) / body_rx)²)`; if the value under the root is negative, that `x` is outside the body and the appendage will float.
+- **z-order:** draw ear-like appendages BEFORE the head so the head covers their bases; decorative extras (sparkles, tails behind the body) follow the same draw-behind-first rule.
+
+Before merging a new or revised character, compute `total_height = bottommost_y − topmost_y` and reject if it falls outside `[74, 82]`, or if `topmost_y < 6` or `bottommost_y > 92`. Don'ts: sharp triangle ears (use rounded tilted ellipses or rounded-tip paths); pointy fang teeth (use small ellipses); lines or stripes extending past the body silhouette (clip to the body ellipse); side-profile characters showing only one eye unless the silhouette is unambiguously single-sided.

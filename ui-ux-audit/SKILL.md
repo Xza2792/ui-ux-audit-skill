@@ -1,6 +1,6 @@
 ---
 name: ui-ux-audit
-description: Comprehensive UI/UX quality audit and prevention system that catches the failures AI consistently ships, including broken or shifting layouts, text overflow, inconsistent components, missing states, poor contrast, undersized touch targets, accessibility violations, performance jank, and generic "AI slop" aesthetics. Use whenever the user asks to audit, review, check, critique, fix, polish, optimize, or improve any UI, page, screen, component, screenshot, or design, or says things like "the layout looks off", "something feels wrong", "this looks AI-generated", "is this ready to ship", "weird spacing", "ugly", or "broken page". ALSO consult this skill silently BEFORE writing or editing any UI code (React, JSX, HTML, CSS, Tailwind, React Native, Expo) so these failures never ship in the first place. Supports per-project profiles that override the universal defaults; an example kids-app profile doubling as a template is included.
+description: Comprehensive UI/UX quality audit and prevention system that catches the failures AI consistently ships, including broken or shifting layouts, text overflow, inconsistent components, missing states, poor contrast, undersized touch targets, accessibility violations, performance jank, and generic "AI slop" aesthetics. Use whenever the user asks to audit, review, check, critique, fix, polish, optimize, or improve any UI, page, screen, component, screenshot, or design, or says things like "the layout looks off", "something feels wrong", "this looks AI-generated", "is this ready to ship", "weird spacing", "ugly", or "broken page". ALSO consult this skill silently BEFORE writing or editing any UI code (React, JSX, HTML, CSS, Tailwind, React Native, Expo) so these failures never ship in the first place. Works on any project with no setup, and ships with switchable project-category profiles (example kids-app, SaaS/dashboard, marketing/landing, e-commerce) plus a simulate-the-user-first method; supports adding your own profile.
 ---
 
 # UI/UX Audit
@@ -13,7 +13,7 @@ Almost every AI UI failure traces back to one root cause: the model generates a 
 
 ## The three modes
 
-**1. Full audit.** Triggered by explicit requests like "run a full UI audit", "audit this app/page/component", "full design review", "is this ready to ship". This is the heavyweight, systematic pass: read ALL reference files listed below, walk every category in order, and produce the scored report defined in this file. Do not skip categories because they look fine at a glance; AI failures hide in the categories that were not checked.
+**1. Full audit.** Triggered by explicit requests like "run a full UI audit", "audit this app/page/component", "full design review", "is this ready to ship". This is the heavyweight, systematic pass: read ALL reference files listed below, **simulate the real user first** (the method in `references/user-simulation.md`), then walk every category in order, and produce the scored report defined in this file. Do not skip categories because they look fine at a glance; AI failures hide in the categories that were not checked.
 
 **2. Quick review.** Triggered by narrower requests like "review this button", "fix the spacing here", "why does this look off". Identify which categories the request touches, read only the matching reference files, scan, and report findings in the same finding format but without the full scored ceremony (severity tags still required; score optional unless asked).
 
@@ -145,21 +145,29 @@ Fifteen categories. A full audit covers all of them; a quick review covers the o
 
 Code-level sloppiness (duplicate/conflicting classes, index keys, div soup, hardcoded strings) is folded into categories 2, 10, and 14 where each item belongs.
 
+Beyond the fifteen categories, `references/user-simulation.md` holds the simulate-the-user-first method — read it on every full audit, and on quick reviews that touch a flow rather than a single static element.
+
 ## Audit procedure
 
 1. **Identify scope and input type.** One component, a page, or the whole app? Code, screenshot, or both?
 2. **Detect stack and project.** Tailwind or plain CSS? React, RN/Expo, or static HTML? Does a project profile apply?
 3. **Read the references.** All of them for a full audit; the matching ones for a quick review. Read the project profile file if it applies.
-4. **Scan systematically, category by category, in numbered order.** Do not just pattern-match the loud problems; AI failures cluster in unchecked categories. For code, actually trace what happens when content is long, lists are empty, the viewport is 360px wide, and the user is on keyboard only.
-5. **Write findings as you go**, deduplicate (one finding per root cause, listing all occurrences), assign severities, compute the score, and produce the report.
+4. **Simulate the real user first.** Before the category sweep, walk the flow as the personas in `references/user-simulation.md` (the target user, a constrained user, an edge-case-data user). The checklist catches rule violations; only the walk catches experiential failures — contradictory states, mislabelled scope, happy-path-only flows. Skip for a single static element; required for anything with a flow.
+5. **Scan systematically, category by category, in numbered order.** Do not just pattern-match the loud problems; AI failures cluster in unchecked categories. For code, actually trace what happens when content is long, lists are empty, the viewport is 360px wide, and the user is on keyboard only.
+6. **Write findings as you go**, deduplicate (one finding per root cause, listing all occurrences), assign severities, compute the score, and produce the report.
 
 ## Project profiles
 
-Profiles add stricter or different rules on top of the universal checks. Detect the project from context (file names, design tokens, the user saying so) and read the profile file when it applies; profile rules OVERRIDE the universal defaults.
+Profiles are how this skill adapts to the *kind* of product under review without losing its universal core: each adds stricter or different rules on top of the universal checks for one category of UI, and OVERRIDES the universal defaults where they differ. Detect the active profile from context — routes and file names, design tokens, the kind of UI on screen, or the user saying so — and read that profile file before auditing. Apply at most one at a time; when surfaces genuinely mix (a marketing page inside a SaaS app), pick the profile for the surface being audited and say which you used.
 
-- **Example: children's learning app** (touch-first, ages 4 to 9): `references/profile-example-kids-app.md`. It also serves as the template: copy it to `references/project-<name>.md`, replace the rules with the project's own, and add a bullet here with its detection cues.
+Bundled category profiles (each a `references/profile-*.md` file):
 
-When no profile applies, use the universal defaults in the reference files. If the user works repeatedly on a project with its own design system, offer once to create a profile file for it.
+- **Example: children's learning app** (touch-first, ages 4 to 9) — `references/profile-example-kids-app.md`. Raises touch-target, type-size, and contrast floors and adds kids conduct rules. Detection: kids / early-learning / reading-typing UI, ages roughly 4-9, or the user saying so. **This one doubles as the template** for your own: copy it to `references/profile-<name>.md`, replace the rules, and add a bullet here with detection cues.
+- **SaaS / dashboard** — `references/profile-saas-dashboard.md`. Data-dense admin, analytics, and internal tools for daily professional use. Detection: dashboard/admin/analytics routes, data tables and charts, auth-gated internal tooling.
+- **Marketing / landing** — `references/profile-marketing-landing.md`. Conversion-focused public pages. Detection: home/product/pricing/campaign pages, hero sections, conversion CTAs.
+- **E-commerce** — `references/profile-ecommerce.md`. Storefronts and checkout. Detection: product listing/detail, cart, checkout, price and add-to-cart components.
+
+When no profile fits, use the universal defaults in the reference files — the skill is fully usable with no profile at all. If the user works repeatedly on a new product type, offer once to add a new profile for it: a `Detection:` line, a source-of-truth note, then `## Overrides:` sections stating only the deltas from the universal defaults, never restating an unchanged rule.
 
 ## Pre-flight checklist (prevention mode)
 

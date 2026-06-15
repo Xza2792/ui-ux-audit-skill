@@ -8,7 +8,7 @@ Almost every AI UI failure traces back to one root cause: the model generates a 
 
 Three modes, chosen automatically from how you ask:
 
-1. **Full audit.** Say "run a full UI audit" and Claude walks all 15 categories systematically and produces a scored report: 0-100 with the arithmetic shown, a ship verdict, findings grouped by severity (Blocker -12, Critical -8, Warning -4, Polish -1), top 3 priorities, and durable-fix recommendations (the lint rule or automated test that stops each failure family from returning).
+1. **Full audit.** Say "run a full UI audit" and Claude first simulates the real user walking the flow (target user, a constrained user, an edge-case-data user), then walks all 15 categories systematically and produces a scored report: 0-100 with the arithmetic shown, a ship verdict, findings grouped by severity (Blocker -12, Critical -8, Warning -4, Polish -1), top 3 priorities, and durable-fix recommendations (the lint rule or automated test that stops each failure family from returning).
 2. **Quick review.** Say "review this component" or "why does this look off" and Claude scans only the relevant categories and reports findings without the full ceremony.
 3. **Prevention.** Whenever Claude writes or edits UI code, it silently runs a pre-flight checklist of the highest-frequency AI failures, so the bugs never ship in the first place.
 
@@ -57,7 +57,7 @@ Screenshot-only input is supported with reduced confidence (visual checks only, 
 
 ## Customize: project profiles
 
-Profiles override the universal defaults for a specific project (stricter touch targets, your design system's rules, domain conduct rules). An example profile for a children's learning app ships at `references/profile-example-kids-app.md` and doubles as the template: copy it, replace the rules with your project's, and register it in the Project profiles section of `SKILL.md` with detection cues.
+Profiles override the universal defaults for a particular *kind* of product — stricter touch targets, a design system's rules, domain conduct rules. Four ship in the box: an example children's-learning-app profile (which also doubles as the template), plus SaaS/dashboard, marketing/landing, and e-commerce. The skill detects which fits from context and loads it; with none, it uses the universal defaults. To add your own, copy `references/profile-example-kids-app.md` to `references/profile-<name>.md`, replace the rules, and register it in the Project profiles section of `SKILL.md` with detection cues.
 
 ## Structure
 
@@ -65,6 +65,7 @@ Profiles override the universal defaults for a specific project (stricter touch 
 ui-ux-audit/
 ├── SKILL.md                                  core: modes, severity rubric, scoring, report template, pre-flight
 └── references/
+    ├── user-simulation.md                    simulate-the-user-first method (run before the sweep)
     ├── structure-typography.md               categories 1-3
     ├── color-states-forms.md                 categories 4-6
     ├── interaction-responsive-a11y.md        categories 7-9
@@ -74,7 +75,10 @@ ui-ux-audit/
     ├── data-viz-tables.md                    category 15
     ├── durable-fixes.md                      failure-to-tooling map
     ├── examples.md                           worked findings and a model report
-    └── profile-example-kids-app.md           example project profile / template
+    ├── profile-example-kids-app.md           example kids-app profile / template
+    ├── profile-saas-dashboard.md             profile: data-dense SaaS / dashboards
+    ├── profile-marketing-landing.md          profile: marketing / landing pages
+    └── profile-ecommerce.md                  profile: e-commerce / checkout
 ```
 
 The core file stays small by design: it loads on every trigger, while reference files load only when an audit runs (progressive disclosure).
